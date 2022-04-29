@@ -1,0 +1,12 @@
+@import "src/styles/variables";
+
+.canvas {
+	display: flex;
+	justify-content: center;
+	padding-top: 180px;
+}
+
+canvas {
+	border: 1px solid black;
+	background-color: white;
+}

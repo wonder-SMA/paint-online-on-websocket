@@ -1,0 +1,13 @@
+@import "variables";
+
+@mixin bar {
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	min-height: $bar-height;
+	width: 100vw;
+	padding: 0 8px;
+	background-color: white;
+	box-shadow: 0 4px 5px gray;
+}
