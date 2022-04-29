@@ -10,6 +10,7 @@ import Brush from '../../tools/Brush';
 import Rect from '../../tools/Rect';
 import Eraser from '../../tools/Eraser';
 import Circle from '../../tools/Circle';
+import Line from '../../tools/Line';
 
 const Canvas = observer(() => {
   const [modal, setModal] = useState(true);
@@ -78,9 +79,9 @@ const Canvas = observer(() => {
         toolStore.setTool(new Eraser(canvas, socket, id));
         toolStore.setStrokeColor('#ffffff');
         break;
-      // case 'Line':
-      //   toolStore.setTool(new Line(canvas, socket, id));
-      //   break;
+      case 'Line':
+        toolStore.setTool(new Line(canvas, socket, id));
+        break;
     }
   };
 
@@ -117,6 +118,9 @@ const Canvas = observer(() => {
         if (!canvasStore.mouseDown) {
           Eraser.draw(ctx, figure.x, figure.y);
         }
+        break;
+      case 'line':
+        Line.staticDraw(ctx, figure.startX, figure.startY, figure.x, figure.y);
         break;
     }
   };
@@ -159,7 +163,7 @@ const Canvas = observer(() => {
               paddingTop: '1rem',
               color: 'red'
             }
-          }>Имя должно содержать минимум 1 букву или цифру</p>}
+          }>Имя должно содержать минимум 1 латинскую букву или цифру</p>}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleClick}>

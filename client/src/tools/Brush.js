@@ -13,15 +13,6 @@ class Brush extends Tool {
     this.canvas.onmousemove = this.handleMouseMove.bind(this);
   }
 
-  handleMouseUp() {
-    canvasStore.setMouseDown(false);
-    this.ctx.beginPath();
-    this.socket.send(JSON.stringify({
-      method: 'finishDrawing',
-      id: this.id,
-    }));
-  }
-
   handleMouseDown(e) {
     this.ctx.beginPath();
     this.socket.send(JSON.stringify({
@@ -30,6 +21,15 @@ class Brush extends Tool {
     }));
     canvasStore.setMouseDown(true);
     this.ctx.moveTo(...this.getCoords(e));
+  }
+
+  handleMouseUp() {
+    canvasStore.setMouseDown(false);
+    this.ctx.beginPath();
+    this.socket.send(JSON.stringify({
+      method: 'finishDrawing',
+      id: this.id,
+    }));
   }
 
   handleMouseMove(e) {

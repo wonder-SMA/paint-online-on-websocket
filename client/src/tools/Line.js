@@ -1,4 +1,5 @@
 import Tool from './Tool';
+import canvasStore from '../store/canvasStore';
 
 class Line extends Tool {
   constructor(canvas, socket, id) {
@@ -12,26 +13,58 @@ class Line extends Tool {
     this.canvas.onmousemove = this.handleMouseMove.bind(this);
   }
 
-  handleMouseUp() {
-    this.mouseDown = false;
+  handleMouseDown(e) {
+    canvasStore.setMouseDown(true);
+    let coords = [...this.getCoords(e)];
+    this.startX = coords[0];
+    this.startY = coords[1];
+    this.ctx.beginPath();
+    this.ctx.moveTo(this.startX, this.startY);
+    this.saved = this.canvas.toDataURL();
   }
 
-  handleMouseDown(e) {
-    this.mouseDown = true;
-    this.ctx.beginPath();
-    this.ctx.moveTo(...this.getCoords(e));
+  handleMouseUp() {
+    canvasStore.setMouseDown(false);
+    this.socket.send(JSON.stringify({
+      method: 'draw',
+      id: this.id,
+      figure: {
+        type: 'line',
+        startX: this.startX,
+        startY: this.startY,
+        x: this.currentX,
+        y: this.currentY
+      }
+    }));
   }
 
   handleMouseMove(e) {
-    if (this.mouseDown) {
-      let x = [...this.getCoords(e)][0];
-      this.draw(x, x);
+    if (canvasStore.mouseDown) {
+      let coords = [...this.getCoords(e)];
+      this.currentX = coords[0];
+      this.currentY = coords[1];
+      this.draw(this.currentX, this.currentY);
     }
   }
 
   draw(x, y) {
-    this.ctx.lineTo(x, y);
-    this.ctx.stroke();
+    const img = new Image();
+    img.src = this.saved;
+    img.onload = () => {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.startX, this.startY);
+      this.ctx.lineTo(x, y);
+      this.ctx.stroke();
+    };
+  }
+
+  static staticDraw(ctx, startX, startY, x, y) {
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
   }
 }
 

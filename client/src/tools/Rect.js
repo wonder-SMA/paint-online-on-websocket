@@ -13,7 +13,16 @@ class Rect extends Tool {
     this.canvas.onmousemove = this.handleMouseMove.bind(this);
   }
 
-  handleMouseUp(e) {
+  handleMouseDown(e) {
+    canvasStore.setMouseDown(true);
+    this.ctx.beginPath();
+    let coords = [...this.getCoords(e)];
+    this.startX = coords[0];
+    this.startY = coords[1];
+    this.saved = this.canvas.toDataURL();
+  }
+
+  handleMouseUp() {
     canvasStore.setMouseDown(false);
     this.socket.send(JSON.stringify({
       method: 'draw',
@@ -26,15 +35,6 @@ class Rect extends Tool {
         h: this.height
       }
     }));
-  }
-
-  handleMouseDown(e) {
-    canvasStore.setMouseDown(true);
-    this.ctx.beginPath();
-    let coords = [...this.getCoords(e)];
-    this.startX = coords[0];
-    this.startY = coords[1];
-    this.saved = this.canvas.toDataURL();
   }
 
   handleMouseMove(e) {

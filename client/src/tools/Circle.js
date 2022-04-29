@@ -13,6 +13,15 @@ class Circle extends Tool {
     this.canvas.onmousemove = this.handleMouseMove.bind(this);
   }
 
+  handleMouseDown(e) {
+    canvasStore.setMouseDown(true);
+    this.ctx.beginPath();
+    let coords = [...this.getCoords(e)];
+    this.startX = coords[0];
+    this.startY = coords[1];
+    this.saved = this.canvas.toDataURL();
+  }
+
   handleMouseUp() {
     canvasStore.setMouseDown(false);
     this.socket.send(JSON.stringify({
@@ -25,15 +34,6 @@ class Circle extends Tool {
         w: this.width
       }
     }));
-  }
-
-  handleMouseDown(e) {
-    canvasStore.setMouseDown(true);
-    this.ctx.beginPath();
-    let coords = [...this.getCoords(e)];
-    this.startX = coords[0];
-    this.startY = coords[1];
-    this.saved = this.canvas.toDataURL();
   }
 
   handleMouseMove(e) {

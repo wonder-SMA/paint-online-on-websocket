@@ -31,7 +31,7 @@ const SettingBar = observer(() => {
           type="number"
           value={toolStore.lineWidth}
           min={1}
-          max={50}
+          max={100}
         />
       </div>
       <div>
